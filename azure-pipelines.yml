@@ -12,10 +12,10 @@ variables:
   azureSubscription: 'b01f618b-6bf9-4e92-bc72-4a6515175c4c'
 
   # Web app name
-  webAppName: 'app0021'
+  webAppName: 'AzureDevOpsJavaWebApp'
 
   # Environment name
-  environmentName: 'app0021'
+  environmentName: 'aAzureDevOpsJavaWebApp'
 
   # Agent VM image name
   vmImageName: 'ubuntu-latest'
@@ -41,6 +41,17 @@ stages:
         SourceFolder: '$(System.DefaultWorkingDirectory)'
         Contents: '**/target/*.?(war|jar)'
         TargetFolder: $(Build.ArtifactStagingDirectory)
+
+    - task: Maven@4
+      inputs:
+        mavenPomFile: 'pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
 
     - upload: $(Build.ArtifactStagingDirectory)
       artifact: drop
